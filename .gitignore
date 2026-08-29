@@ -1,0 +1,13 @@
+# Node
+node_modules/
+dist/
+.env
+*.log
+
+# Vite / React
+client/dist/
+client/.env
+
+# OS
+.DS_Store
+Thumbs.db
