@@ -1,18 +1,18 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IStudent extends Document {
-  user: mongoose.Types.ObjectId;
+  user?: mongoose.Types.ObjectId; // now optional
   name: string;
   enrollmentNumber: string;
   department: string;
-  year: number; // 1 to 5
+  year: number;
   education: {
     degree: string;
     institution: string;
     year: number;
     score?: string;
   }[];
-  skills: string[]; // will be enhanced in Part 08
+  skills: string[];
   projects: {
     title: string;
     description: string;
@@ -32,8 +32,8 @@ const StudentSchema = new Schema<IStudent>(
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
       unique: true,
+      // required: true, // removed
     },
     name: { type: String, required: true },
     enrollmentNumber: { type: String, required: true, unique: true },

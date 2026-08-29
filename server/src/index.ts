@@ -1,15 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import { config, validateEnv } from './config/env';
-import { connectDB } from './config/db';           // new
+import { connectDB } from './config/db';
 import { errorHandler } from './middlewares/errorHandler';
 import { sendSuccess } from './utils/response';
+import authRoutes from './routes/auth.routes';
 
 // Validate environment variables
 validateEnv();
 
 // Connect to MongoDB
-connectDB();                                       // new
+connectDB();
 
 const app = express();
 const PORT = config.port;
@@ -25,6 +26,9 @@ app.get('/', (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json(sendSuccess({ uptime: process.uptime() }, 'Health check OK'));
 });
+
+// Mount authentication routes
+app.use('/api/auth', authRoutes);
 
 // Global error handler
 app.use(errorHandler);

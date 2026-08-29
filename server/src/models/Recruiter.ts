@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IRecruiter extends Document {
-  user: mongoose.Types.ObjectId;
+  user?: mongoose.Types.ObjectId;
   companyName: string;
   companyWebsite?: string;
   description: string;
@@ -14,8 +14,8 @@ const RecruiterSchema = new Schema<IRecruiter>(
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
       unique: true,
+      // required: true, // removed
     },
     companyName: { type: String, required: true },
     companyWebsite: { type: String },
