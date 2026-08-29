@@ -7,10 +7,10 @@ import { DashboardLayout } from './components/layout/DashboardLayout';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
-import { StudentDashboard } from './pages/StudentDashboard';
+import StudentDashboard from './pages/StudentDashboard'; // ✅ default import
 import { DashboardRedirect } from './pages/DashboardRedirect';
 
-// Placeholder pages for other roles (we'll build them later)
+// Placeholder pages for other roles
 const RecruiterDashboard = () => <div>Recruiter Dashboard</div>;
 const FacultyDashboard = () => <div>Faculty Dashboard</div>;
 const InstitutionDashboard = () => <div>Institution Dashboard</div>;

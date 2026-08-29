@@ -5,6 +5,7 @@ import { connectDB } from './config/db';
 import { errorHandler } from './middlewares/errorHandler';
 import { sendSuccess } from './utils/response';
 import authRoutes from './routes/auth.routes';
+import studentRoutes from './routes/student.routes';
 
 // Validate environment variables
 validateEnv();
@@ -29,6 +30,9 @@ app.get('/api/health', (req, res) => {
 
 // Mount authentication routes
 app.use('/api/auth', authRoutes);
+
+// ... after auth routes
+app.use('/api/students', studentRoutes);
 
 // Global error handler
 app.use(errorHandler);
