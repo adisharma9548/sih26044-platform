@@ -31,7 +31,7 @@ const UserSchema = new Schema<IUser>(
     profileId: {
       type: Schema.Types.ObjectId,
       required: true,
-      refPath: 'profileModel', // dynamic reference
+      refPath: 'profileModel',
     },
     profileModel: {
       type: String,

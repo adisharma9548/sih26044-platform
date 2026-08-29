@@ -13,7 +13,7 @@ const FacultySchema = new Schema<IFaculty>(
       type: Schema.Types.ObjectId,
       ref: 'User',
       unique: true,
-      // required: true,
+      sparse: true, // ← CRITICAL
     },
     name: { type: String, required: true },
     department: { type: String, required: true },

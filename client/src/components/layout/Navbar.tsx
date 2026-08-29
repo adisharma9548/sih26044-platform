@@ -1,9 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../common/Button';
+import { useAuth } from '../../contexts/AuthContext';
 
 export const Navbar: React.FC = () => {
-  const isLoggedIn = false; // will be replaced later
+  const { user, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
@@ -12,7 +19,16 @@ export const Navbar: React.FC = () => {
           <span className="text-2xl font-bold text-primary-600">SIH26044</span>
         </Link>
         <div className="flex items-center space-x-4">
-          {!isLoggedIn ? (
+          {isAuthenticated ? (
+            <>
+              <span className="text-sm text-gray-700 hidden sm:inline">
+                {user?.email}
+              </span>
+              <Button variant="outline" size="sm" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
+          ) : (
             <>
               <Link to="/login">
                 <Button variant="outline" size="sm">Log in</Button>
@@ -20,11 +36,6 @@ export const Navbar: React.FC = () => {
               <Link to="/register">
                 <Button size="sm">Get Started</Button>
               </Link>
-            </>
-          ) : (
-            <>
-              <span className="text-sm text-gray-700">User Name</span>
-              <Button variant="outline" size="sm">Logout</Button>
             </>
           )}
         </div>

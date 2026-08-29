@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '../components/common/Input';
 import { Select } from '../components/common/Select';
 import { Button } from '../components/common/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/common/Card';
+import { useAuth } from '../contexts/AuthContext';
 
 export const RegisterPage: React.FC = () => {
   const [role, setRole] = useState('student');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { register } = useAuth();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -14,15 +20,76 @@ export const RegisterPage: React.FC = () => {
     enrollmentNumber: '',
     department: '',
     year: '',
+    // For recruiter
+    companyName: '',
+    companyWebsite: '',
+    description: '',
+    industry: '',
+    location: '',
+    // For faculty
+    designation: '',
+    // For institution
+    address: '',
+    departments: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const buildProfileData = () => {
+    switch (role) {
+      case 'student':
+        return {
+          name: formData.name,
+          enrollmentNumber: formData.enrollmentNumber,
+          department: formData.department,
+          year: parseInt(formData.year) || 1,
+          education: [], // will be added later
+        };
+      case 'recruiter':
+        return {
+          companyName: formData.companyName,
+          companyWebsite: formData.companyWebsite,
+          description: formData.description,
+          industry: formData.industry,
+          location: formData.location,
+        };
+      case 'faculty':
+        return {
+          name: formData.name,
+          department: formData.department,
+          designation: formData.designation,
+        };
+      case 'institution':
+        return {
+          name: formData.name,
+          address: formData.address,
+          departments: formData.departments.split(',').map(s => s.trim()).filter(Boolean),
+        };
+      default:
+        return {};
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Register:', { role, ...formData });
+    setError('');
+    setLoading(true);
+    try {
+      const payload = {
+        email: formData.email,
+        password: formData.password,
+        role,
+        profileData: buildProfileData(),
+      };
+      await register(payload);
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const roleOptions = [
@@ -40,6 +107,11 @@ export const RegisterPage: React.FC = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
             <Select
               label="I am a"
               options={roleOptions}
@@ -65,16 +137,16 @@ export const RegisterPage: React.FC = () => {
               fullWidth
               required
             />
-            <Input
-              label="Full Name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              fullWidth
-              required
-            />
             {role === 'student' && (
               <>
+                <Input
+                  label="Full Name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                />
                 <Input
                   label="Enrollment Number"
                   name="enrollmentNumber"
@@ -102,7 +174,106 @@ export const RegisterPage: React.FC = () => {
                 />
               </>
             )}
-            <Button type="submit" fullWidth size="lg">
+            {role === 'recruiter' && (
+              <>
+                <Input
+                  label="Company Name"
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                />
+                <Input
+                  label="Company Website"
+                  name="companyWebsite"
+                  value={formData.companyWebsite}
+                  onChange={handleChange}
+                  fullWidth
+                />
+                <Input
+                  label="Company Description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                />
+                <Input
+                  label="Industry"
+                  name="industry"
+                  value={formData.industry}
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                />
+                <Input
+                  label="Location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                />
+              </>
+            )}
+            {role === 'faculty' && (
+              <>
+                <Input
+                  label="Full Name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                />
+                <Input
+                  label="Department"
+                  name="department"
+                  value={formData.department}
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                />
+                <Input
+                  label="Designation"
+                  name="designation"
+                  value={formData.designation}
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                />
+              </>
+            )}
+            {role === 'institution' && (
+              <>
+                <Input
+                  label="Institution Name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                />
+                <Input
+                  label="Address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  fullWidth
+                  required
+                />
+                <Input
+                  label="Departments (comma separated)"
+                  name="departments"
+                  value={formData.departments}
+                  onChange={handleChange}
+                  fullWidth
+                  placeholder="e.g., CSE, ECE, Mechanical"
+                />
+              </>
+            )}
+            <Button type="submit" fullWidth size="lg" loading={loading}>
               Register
             </Button>
           </form>

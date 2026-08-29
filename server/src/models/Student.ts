@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IStudent extends Document {
-  user?: mongoose.Types.ObjectId; // now optional
+  user?: mongoose.Types.ObjectId;
   name: string;
   enrollmentNumber: string;
   department: string;
@@ -33,7 +33,7 @@ const StudentSchema = new Schema<IStudent>(
       type: Schema.Types.ObjectId,
       ref: 'User',
       unique: true,
-      // required: true, // removed
+      sparse: true, // ← CRITICAL
     },
     name: { type: String, required: true },
     enrollmentNumber: { type: String, required: true, unique: true },

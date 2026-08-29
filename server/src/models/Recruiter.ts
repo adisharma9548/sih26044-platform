@@ -15,7 +15,7 @@ const RecruiterSchema = new Schema<IRecruiter>(
       type: Schema.Types.ObjectId,
       ref: 'User',
       unique: true,
-      // required: true, // removed
+      sparse: true, // ← CRITICAL
     },
     companyName: { type: String, required: true },
     companyWebsite: { type: String },

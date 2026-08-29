@@ -13,7 +13,7 @@ const InstitutionSchema = new Schema<IInstitution>(
       type: Schema.Types.ObjectId,
       ref: 'User',
       unique: true,
-      // required: true,
+      sparse: true, // ← CRITICAL
     },
     name: { type: String, required: true },
     address: { type: String, required: true },
