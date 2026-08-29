@@ -4,6 +4,10 @@ import { studentService, type StudentProfile } from '../services/student.service
 import { Card, CardContent, CardHeader, CardTitle } from '../components/common/Card';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
+import EducationList from './StudentDashboard/EducationList';
+import ProjectsList from './StudentDashboard/ProjectsList';
+import CertificationsList from './StudentDashboard/CertificationsList';
+import SkillsList from './StudentDashboard/SkillsList';
 
 export const StudentDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -50,7 +54,12 @@ export const StudentDashboard: React.FC = () => {
       fetchProfile();
     } catch (err) {
       console.error('Failed to update profile:', err);
+      alert('Failed to update profile. Please try again.');
     }
+  };
+
+  const refreshProfile = () => {
+    fetchProfile();
   };
 
   if (loading) {
@@ -69,7 +78,21 @@ export const StudentDashboard: React.FC = () => {
     );
   }
 
-  const completion = 75; // placeholder
+  // Calculate profile completion
+  const calculateCompletion = () => {
+    let score = 0;
+    if (profile.name) score += 15;
+    if (profile.enrollmentNumber) score += 10;
+    if (profile.department) score += 10;
+    if (profile.year) score += 10;
+    if (profile.education?.length > 0) score += 15;
+    if (profile.skills?.length > 0) score += 15;
+    if (profile.projects?.length > 0) score += 15;
+    if (profile.certifications?.length > 0) score += 10;
+    return Math.min(score, 100);
+  };
+
+  const completion = calculateCompletion();
 
   return (
     <div className="space-y-6">
@@ -119,7 +142,7 @@ export const StudentDashboard: React.FC = () => {
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle>Profile Information</CardTitle>
-            {!isEditing && <Button size="sm" onClick={() => setIsEditing(true)}>Edit</Button>}
+            {!isEditing && <Button size="sm" onClick={() => setIsEditing(true)}>Edit Profile</Button>}
           </div>
         </CardHeader>
         <CardContent>
@@ -186,41 +209,17 @@ export const StudentDashboard: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Skills */}
-      <Card>
-        <CardHeader><CardTitle>Skills</CardTitle></CardHeader>
-        <CardContent>
-          {profile.skills?.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">No skills added yet</p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {profile.skills?.map((skill, index) => (
-                <span key={index} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                  {skill}
-                </span>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* Skills List */}
+      <SkillsList skills={profile.skills?.map(s => s.name) || []} />
 
-      {/* Education - Simplified */}
-      <Card>
-        <CardHeader><CardTitle>Education</CardTitle></CardHeader>
-        <CardContent>
-          {profile.education?.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">No education entries yet</p>
-          ) : (
-            profile.education?.map((edu, index) => (
-              <div key={index} className="p-3 border rounded-lg mb-2">
-                <p className="font-medium">{edu.degree}</p>
-                <p className="text-sm text-gray-600">{edu.institution}</p>
-                <p className="text-sm text-gray-500">{edu.year} {edu.score && `· ${edu.score}`}</p>
-              </div>
-            ))
-          )}
-        </CardContent>
-      </Card>
+      {/* Education List with CRUD */}
+      <EducationList education={profile.education || []} onUpdate={refreshProfile} />
+
+      {/* Projects List with CRUD */}
+      <ProjectsList projects={profile.projects || []} onUpdate={refreshProfile} />
+
+      {/* Certifications List with CRUD */}
+      <CertificationsList certifications={profile.certifications || []} onUpdate={refreshProfile} />
     </div>
   );
 };
