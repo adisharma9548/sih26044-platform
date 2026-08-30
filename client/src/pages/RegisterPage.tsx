@@ -4,10 +4,10 @@ import { Input } from '../components/common/Input';
 import { Select } from '../components/common/Select';
 import { Button } from '../components/common/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/common/Card';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth, type User } from '../contexts/AuthContext';
 
 export const RegisterPage: React.FC = () => {
-  const [role, setRole] = useState('student');
+  const [role, setRole] = useState<User['role']>('student');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
@@ -85,8 +85,8 @@ export const RegisterPage: React.FC = () => {
       };
       await register(payload);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Registration failed. Please try again.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -116,7 +116,7 @@ export const RegisterPage: React.FC = () => {
               label="I am a"
               options={roleOptions}
               value={role}
-              onChange={(e) => setRole(e.target.value)}
+              onChange={(e) => setRole(e.target.value as User['role'])}
               fullWidth
             />
             <Input

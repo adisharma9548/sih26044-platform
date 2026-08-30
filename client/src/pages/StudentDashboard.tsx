@@ -4,10 +4,11 @@ import { studentService, type StudentProfile } from '../services/student.service
 import { Card, CardContent, CardHeader, CardTitle } from '../components/common/Card';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
+import SkillsManagement from './StudentDashboard/SkillsManagement';
 import EducationList from './StudentDashboard/EducationList';
 import ProjectsList from './StudentDashboard/ProjectsList';
 import CertificationsList from './StudentDashboard/CertificationsList';
-import SkillsList from './StudentDashboard/SkillsList';
+import DocumentManagement from './StudentDashboard/DocumentManagement';
 
 export const StudentDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -34,9 +35,8 @@ export const StudentDashboard: React.FC = () => {
         year: data.year,
       });
       setError('');
-    } catch (err: any) {
-      setError('Failed to load profile');
-      console.error(err);
+    } catch {
+      setError('Unable to load your profile. Please refresh the page.');
     } finally {
       setLoading(false);
     }
@@ -52,34 +52,31 @@ export const StudentDashboard: React.FC = () => {
       await studentService.updateProfile(formData);
       setIsEditing(false);
       fetchProfile();
-    } catch (err) {
-      console.error('Failed to update profile:', err);
-      alert('Failed to update profile. Please try again.');
+    } catch {
+      alert('Update failed. Please check your inputs.');
     }
   };
 
-  const refreshProfile = () => {
-    fetchProfile();
-  };
+  const refreshProfile = () => fetchProfile();
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Loading profile...</div>
+        <div className="text-gray-500 dark:text-gray-400">Loading your profile…</div>
       </div>
     );
   }
 
   if (error || !profile) {
     return (
-      <div className="bg-red-50 text-red-700 p-4 rounded-lg">
-        {error || 'Profile not found'}
+      <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 p-4 rounded-lg border border-red-200 dark:border-red-800">
+        {error || 'Profile not found.'}
       </div>
     );
   }
 
-  // Calculate profile completion
-  const calculateCompletion = () => {
+  // Calculate completion
+  const completion = (() => {
     let score = 0;
     if (profile.name) score += 15;
     if (profile.enrollmentNumber) score += 10;
@@ -90,59 +87,67 @@ export const StudentDashboard: React.FC = () => {
     if (profile.projects?.length > 0) score += 15;
     if (profile.certifications?.length > 0) score += 10;
     return Math.min(score, 100);
-  };
-
-  const completion = calculateCompletion();
+  })();
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Student Dashboard</h1>
-        <span className="text-sm text-gray-500">
-          Welcome, {profile.name || user?.email}
+      {/* Welcome */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Student Dashboard
+        </h1>
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          Welcome back, <span className="font-medium">{profile.name || user?.email}</span>
         </span>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
-          <CardHeader><CardTitle>Profile Completion</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="dark:text-white">Profile Completion</CardTitle></CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-primary-600">{completion}%</div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-              <div className="bg-primary-600 h-2 rounded-full" style={{ width: `${completion}%` }}></div>
+            <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{completion}%</div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
+              <div className="bg-primary-600 h-2 rounded-full transition-all duration-500" style={{ width: `${completion}%` }}></div>
             </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              {completion === 100 ? 'Fully complete! 🎉' : 'Add more details to improve your profile'}
+            </p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle>Skills</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="dark:text-white">Skills</CardTitle></CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-gray-900">{profile.skills?.length || 0}</div>
-            <p className="text-sm text-gray-500">Skills added</p>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white">{profile.skills?.length || 0}</div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Skills added</p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle>Projects</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="dark:text-white">Projects</CardTitle></CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-gray-900">{profile.projects?.length || 0}</div>
-            <p className="text-sm text-gray-500">Projects completed</p>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white">{profile.projects?.length || 0}</div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Projects showcased</p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle>Certifications</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="dark:text-white">Certifications</CardTitle></CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-gray-900">{profile.certifications?.length || 0}</div>
-            <p className="text-sm text-gray-500">Certifications earned</p>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white">{profile.certifications?.length || 0}</div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Certifications earned</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Profile Info */}
+      {/* Profile Card */}
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle>Profile Information</CardTitle>
-            {!isEditing && <Button size="sm" onClick={() => setIsEditing(true)}>Edit Profile</Button>}
+            <CardTitle className="dark:text-white">Personal Information</CardTitle>
+            {!isEditing && (
+              <Button size="sm" onClick={() => setIsEditing(true)}>
+                Edit Profile
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -181,45 +186,49 @@ export const StudentDashboard: React.FC = () => {
                 fullWidth
                 required
               />
-              <div className="flex space-x-2">
-                <Button type="submit">Save</Button>
-                <Button variant="outline" type="button" onClick={() => setIsEditing(false)}>Cancel</Button>
+              <div className="flex space-x-3">
+                <Button type="submit">Save Changes</Button>
+                <Button variant="outline" type="button" onClick={() => setIsEditing(false)}>
+                  Cancel
+                </Button>
               </div>
             </form>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Full Name</p>
-                <p className="font-medium">{profile.name}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Full Name</p>
+                <p className="font-medium text-gray-900 dark:text-white">{profile.name}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Enrollment Number</p>
-                <p className="font-medium">{profile.enrollmentNumber}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Enrollment Number</p>
+                <p className="font-medium text-gray-900 dark:text-white">{profile.enrollmentNumber}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Department</p>
-                <p className="font-medium">{profile.department}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Department</p>
+                <p className="font-medium text-gray-900 dark:text-white">{profile.department}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Year</p>
-                <p className="font-medium">{profile.year}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Year</p>
+                <p className="font-medium text-gray-900 dark:text-white">{profile.year}</p>
               </div>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Skills List */}
-      <SkillsList skills={profile.skills?.map(s => s.name) || []} />
+      {/* Skills Management */}
+      <SkillsManagement skills={profile.skills || []} onUpdate={refreshProfile} />
 
-      {/* Education List with CRUD */}
+      {/* Education */}
       <EducationList education={profile.education || []} onUpdate={refreshProfile} />
 
-      {/* Projects List with CRUD */}
+      {/* Projects */}
       <ProjectsList projects={profile.projects || []} onUpdate={refreshProfile} />
 
-      {/* Certifications List with CRUD */}
+      {/* Certifications */}
       <CertificationsList certifications={profile.certifications || []} onUpdate={refreshProfile} />
+
+      <DocumentManagement profile={profile} onUpdate={refreshProfile} />
     </div>
   );
 };

@@ -8,6 +8,16 @@ export interface Education {
   score?: string;
 }
 
+export interface Skill {
+  _id?: string;
+  name: string;
+  category: 'Programming' | 'Design' | 'Data Science' | 'Cloud' | 'DevOps' | 'Soft Skills' | 'Other';
+  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
+  verified: boolean;
+}
+
+export type SkillInput = Pick<Skill, 'name' | 'category' | 'level'>;
+
 export interface Project {
   _id?: string;
   title: string;
@@ -22,6 +32,15 @@ export interface Certification {
   link?: string;
 }
 
+export interface FileMetadata {
+  _id?: string;
+  publicId: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  uploadedAt: string;
+}
+
 export interface StudentProfile {
   _id: string;
   user: string;
@@ -30,77 +49,116 @@ export interface StudentProfile {
   department: string;
   year: number;
   education: Education[];
-  skills: string[];
+  skills: Skill[];
   projects: Project[];
   certifications: Certification[];
-  resumeUrl?: string;
-  portfolioUrl?: string;
+  resume?: FileMetadata;
+  portfolioDocuments: FileMetadata[];
 }
 
 export const studentService = {
-  // Get profile
+  // Profile
   getProfile: async (): Promise<StudentProfile> => {
     const response = await api.get('/students/profile');
     return response.data.data;
   },
 
-  // Update basic info
   updateProfile: async (data: Partial<StudentProfile>): Promise<StudentProfile> => {
     const response = await api.put('/students/profile', data);
     return response.data.data;
   },
 
-  // Add education
+  // Education
   addEducation: async (education: Omit<Education, '_id'>): Promise<StudentProfile> => {
     const response = await api.post('/students/education', education);
     return response.data.data;
   },
 
-  // Update education
   updateEducation: async (educationId: string, education: Partial<Education>): Promise<StudentProfile> => {
     const response = await api.put(`/students/education/${educationId}`, education);
     return response.data.data;
   },
 
-  // Delete education
   deleteEducation: async (educationId: string): Promise<StudentProfile> => {
     const response = await api.delete(`/students/education/${educationId}`);
     return response.data.data;
   },
 
-  // Add project
+  // Projects
   addProject: async (project: Omit<Project, '_id'>): Promise<StudentProfile> => {
     const response = await api.post('/students/projects', project);
     return response.data.data;
   },
 
-  // Update project
   updateProject: async (projectId: string, project: Partial<Project>): Promise<StudentProfile> => {
     const response = await api.put(`/students/projects/${projectId}`, project);
     return response.data.data;
   },
 
-  // Delete project
   deleteProject: async (projectId: string): Promise<StudentProfile> => {
     const response = await api.delete(`/students/projects/${projectId}`);
     return response.data.data;
   },
 
-  // Add certification
+  // Certifications
   addCertification: async (cert: Omit<Certification, '_id'>): Promise<StudentProfile> => {
     const response = await api.post('/students/certifications', cert);
     return response.data.data;
   },
 
-  // Update certification
   updateCertification: async (certId: string, cert: Partial<Certification>): Promise<StudentProfile> => {
     const response = await api.put(`/students/certifications/${certId}`, cert);
     return response.data.data;
   },
 
-  // Delete certification
   deleteCertification: async (certId: string): Promise<StudentProfile> => {
     const response = await api.delete(`/students/certifications/${certId}`);
     return response.data.data;
+  },
+
+  // Skills
+  addSkill: async (skill: SkillInput): Promise<StudentProfile> => {
+    const response = await api.post('/students/skills', skill);
+    return response.data.data;
+  },
+
+  updateSkill: async (skillId: string, skill: Partial<SkillInput>): Promise<StudentProfile> => {
+    const response = await api.put(`/students/skills/${skillId}`, skill);
+    return response.data.data;
+  },
+
+  deleteSkill: async (skillId: string): Promise<StudentProfile> => {
+    const response = await api.delete(`/students/skills/${skillId}`);
+    return response.data.data;
+  },
+
+  // Documents
+  uploadResume: async (file: File): Promise<StudentProfile> => {
+    const data = new FormData();
+    data.append('document', file);
+    const response = await api.post('/students/resume', data);
+    return response.data.data;
+  },
+
+  deleteResume: async (): Promise<StudentProfile> => {
+    const response = await api.delete('/students/resume');
+    return response.data.data;
+  },
+
+  uploadPortfolioDocument: async (file: File): Promise<StudentProfile> => {
+    const data = new FormData();
+    data.append('document', file);
+    const response = await api.post('/students/portfolio-documents', data);
+    return response.data.data;
+  },
+
+  deletePortfolioDocument: async (documentId: string): Promise<StudentProfile> => {
+    const response = await api.delete(`/students/portfolio-documents/${documentId}`);
+    return response.data.data;
+  },
+
+  getDocumentDownloadUrl: async (type: 'resume' | 'portfolio', documentId?: string): Promise<string> => {
+    const response = await api.get(`/students/documents/${type}${documentId ? `/${documentId}` : ''}`);
+    return response.data.data.url;
   },
 };

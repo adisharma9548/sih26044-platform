@@ -11,7 +11,11 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
   allowedRoles = [],
   redirectTo = '/login',
 }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to={redirectTo} replace />;

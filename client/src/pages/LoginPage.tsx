@@ -21,8 +21,8 @@ export const LoginPage: React.FC = () => {
       await login(email, password);
       // Redirect based on role (we'll handle in App.tsx with a dashboard redirect)
       navigate('/dashboard'); // This will be a protected route that redirects to role-specific dashboard
-    } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }

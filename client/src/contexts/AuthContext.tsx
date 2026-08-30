@@ -1,19 +1,30 @@
-    import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import api from '../services/api';
 
-interface User {
+export interface User {
   id: string;
   email: string;
   role: 'student' | 'recruiter' | 'faculty' | 'institution';
+  name?: string;
+}
+
+export interface RegisterPayload {
+  email: string;
+  password: string;
+  role: User['role'];
+  profileData: Record<string, unknown>;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: any) => Promise<void>;
+  register: (data: RegisterPayload) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
+  updateUser: (user: User) => void;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,7 +34,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // On mount, restore session from localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
@@ -32,8 +42,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const parsedUser = JSON.parse(storedUser);
         setToken(storedToken);
         setUser(parsedUser);
-      } catch (e) {
-        // Invalid stored data
+      } catch {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       }
@@ -45,6 +54,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const response = await api.post('/auth/login', { email, password });
     if (response.data.success) {
       const { user, token } = response.data.data;
+      
+      // Fetch full profile to get name
+      try {
+        const profileRes = await api.get('/students/profile', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (profileRes.data.success) {
+          user.name = profileRes.data.data.name;
+        }
+      } catch {
+        // If profile fetch fails, use email as fallback
+        user.name = user.email;
+      }
+      
       setUser(user);
       setToken(token);
       localStorage.setItem('token', token);
@@ -54,10 +77,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const register = async (data: any) => {
+  const register = async (data: RegisterPayload) => {
     const response = await api.post('/auth/register', data);
     if (response.data.success) {
       const { user, token } = response.data.data;
+      user.name = data.profileData.name || user.email;
       setUser(user);
       setToken(token);
       localStorage.setItem('token', token);
@@ -74,6 +98,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem('user');
   };
 
+  const updateUser = (updatedUser: User) => {
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  };
+
   const value = {
     user,
     token,
@@ -81,6 +110,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     register,
     logout,
     isAuthenticated: !!user && !!token,
+    updateUser,
+    loading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

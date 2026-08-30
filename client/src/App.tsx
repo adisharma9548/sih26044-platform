@@ -1,13 +1,13 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { PrivateRoute } from './components/common/PrivateRoute';
 import { MainLayout } from './components/layout/MainLayout';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
-import StudentDashboard from './pages/StudentDashboard'; // ✅ default import
+import StudentDashboard from './pages/StudentDashboard';
 import { DashboardRedirect } from './pages/DashboardRedirect';
 
 // Placeholder pages for other roles
@@ -20,6 +20,7 @@ const studentSidebarItems = [
   { path: '/student/dashboard', label: 'Dashboard' },
   { path: '/student/profile', label: 'Profile' },
   { path: '/student/skills', label: 'Skills' },
+  { path: '/student/documents', label: 'Documents' },
   { path: '/student/applications', label: 'Applications' },
 ];
 
@@ -43,56 +44,59 @@ const institutionSidebarItems = [
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<HomePage />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
-          </Route>
-
-          {/* Protected routes – role‑specific dashboards */}
-          <Route path="/dashboard" element={<PrivateRoute />}>
-            <Route index element={<DashboardRedirect />} />
-          </Route>
-
-          <Route path="/student" element={<PrivateRoute allowedRoles={['student']} />}>
-            <Route element={<DashboardLayout sidebarItems={studentSidebarItems} />}>
-              <Route path="dashboard" element={<StudentDashboard />} />
-              <Route path="profile" element={<div className="p-4">Student Profile</div>} />
-              <Route path="skills" element={<div className="p-4">Skills Management</div>} />
-              <Route path="applications" element={<div className="p-4">My Applications</div>} />
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="register" element={<RegisterPage />} />
             </Route>
-          </Route>
 
-          <Route path="/recruiter" element={<PrivateRoute allowedRoles={['recruiter']} />}>
-            <Route element={<DashboardLayout sidebarItems={recruiterSidebarItems} />}>
-              <Route path="dashboard" element={<RecruiterDashboard />} />
-              <Route path="jobs" element={<div className="p-4">Manage Jobs</div>} />
-              <Route path="applications" element={<div className="p-4">View Applications</div>} />
+            {/* Protected routes – role‑specific dashboards */}
+            <Route path="/dashboard" element={<PrivateRoute />}>
+              <Route index element={<DashboardRedirect />} />
             </Route>
-          </Route>
 
-          <Route path="/faculty" element={<PrivateRoute allowedRoles={['faculty']} />}>
-            <Route element={<DashboardLayout sidebarItems={facultySidebarItems} />}>
-              <Route path="dashboard" element={<FacultyDashboard />} />
-              <Route path="mentorship" element={<div className="p-4">Mentorship</div>} />
-              <Route path="research" element={<div className="p-4">Research</div>} />
+            <Route path="/student" element={<PrivateRoute allowedRoles={['student']} />}>
+              <Route element={<DashboardLayout sidebarItems={studentSidebarItems} />}>
+                <Route path="dashboard" element={<StudentDashboard />} />
+                <Route path="profile" element={<StudentDashboard />} />
+                <Route path="skills" element={<StudentDashboard />} />
+                <Route path="documents" element={<StudentDashboard />} />
+                <Route path="applications" element={<div className="p-4">My Applications</div>} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route path="/institution" element={<PrivateRoute allowedRoles={['institution']} />}>
-            <Route element={<DashboardLayout sidebarItems={institutionSidebarItems} />}>
-              <Route path="dashboard" element={<InstitutionDashboard />} />
-              <Route path="students" element={<div className="p-4">Student Management</div>} />
-              <Route path="analytics" element={<div className="p-4">Analytics</div>} />
+            <Route path="/recruiter" element={<PrivateRoute allowedRoles={['recruiter']} />}>
+              <Route element={<DashboardLayout sidebarItems={recruiterSidebarItems} />}>
+                <Route path="dashboard" element={<RecruiterDashboard />} />
+                <Route path="jobs" element={<div className="p-4">Manage Jobs</div>} />
+                <Route path="applications" element={<div className="p-4">View Applications</div>} />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+
+            <Route path="/faculty" element={<PrivateRoute allowedRoles={['faculty']} />}>
+              <Route element={<DashboardLayout sidebarItems={facultySidebarItems} />}>
+                <Route path="dashboard" element={<FacultyDashboard />} />
+                <Route path="mentorship" element={<div className="p-4">Mentorship</div>} />
+                <Route path="research" element={<div className="p-4">Research</div>} />
+              </Route>
+            </Route>
+
+            <Route path="/institution" element={<PrivateRoute allowedRoles={['institution']} />}>
+              <Route element={<DashboardLayout sidebarItems={institutionSidebarItems} />}>
+                <Route path="dashboard" element={<InstitutionDashboard />} />
+                <Route path="students" element={<div className="p-4">Student Management</div>} />
+                <Route path="analytics" element={<div className="p-4">Analytics</div>} />
+              </Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

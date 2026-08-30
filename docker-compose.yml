@@ -1,0 +1,36 @@
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: sih26044-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGODB_URI=mongodb+srv://sih26044:sih26044@cluster0.pmci032.mongodb.net/sih26044?appName=Cluster0
+      - JWT_SECRET=b35b06bbf5f58646d4e70dd9709f4e575f4ddfc2f0acb22df846674fbe9acfe6b3f5a3b6d31ac6bb1bd99e6c2ac07a18b2bf296a2106dd62f451d8cd54964fc9
+      - JWT_EXPIRES_IN=7d
+    networks:
+      - sih26044-network
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: sih26044-frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE=http://localhost:5000/api
+    depends_on:
+      - backend
+    networks:
+      - sih26044-network
+
+networks:
+  sih26044-network:
+    driver: bridge

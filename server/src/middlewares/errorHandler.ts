@@ -37,6 +37,10 @@ export function errorHandler(
     code = err.code;
     message = err.message;
     details = err.details || null;
+  } else if (err.code === 'LIMIT_FILE_SIZE') {
+    statusCode = 400;
+    code = 'FILE_TOO_LARGE';
+    message = 'Files must be 5 MB or smaller';
   } else if (err.name === 'ValidationError') {
     // Mongoose validation error (will be useful later)
     statusCode = 400;
