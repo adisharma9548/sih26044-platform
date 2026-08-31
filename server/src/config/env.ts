@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
+dotenv.config({ path: '.env.cloudinary.local', override: true });
 
 export function validateEnv(): void {
   const required = ['PORT', 'NODE_ENV', 'MONGODB_URI', 'JWT_SECRET'];

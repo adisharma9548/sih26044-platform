@@ -13,6 +13,8 @@ router.use(authorize('student'));
 // Profile
 router.get('/profile', studentController.getProfile.bind(studentController));
 router.put('/profile', studentController.updateProfile.bind(studentController));
+router.get('/career-intelligence', studentController.getCareerIntelligence.bind(studentController));
+router.get('/career-options', studentController.getCareerOptions.bind(studentController));
 
 // Education
 router.post('/education', studentController.addEducation.bind(studentController));
@@ -39,6 +41,7 @@ router.post('/resume', uploadDocument.single('document'), studentController.uplo
 router.delete('/resume', studentController.deleteResume.bind(studentController));
 router.post('/portfolio-documents', uploadDocument.single('document'), studentController.uploadPortfolioDocument.bind(studentController));
 router.delete('/portfolio-documents/:id', studentController.deletePortfolioDocument.bind(studentController));
-router.get('/documents/:type/:id?', studentController.getDocumentDownloadUrl.bind(studentController));
+router.get('/documents/resume', studentController.getDocumentDownloadUrl.bind(studentController));
+router.get('/documents/portfolio/:id', studentController.getDocumentDownloadUrl.bind(studentController));
 
 export default router;

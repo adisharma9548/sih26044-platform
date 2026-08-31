@@ -48,12 +48,23 @@ export interface StudentProfile {
   enrollmentNumber: string;
   department: string;
   year: number;
+  targetRole: string;
   education: Education[];
   skills: Skill[];
   projects: Project[];
   certifications: Certification[];
   resume?: FileMetadata;
   portfolioDocuments: FileMetadata[];
+}
+
+export interface CareerIntelligence {
+  targetRole: string;
+  readinessScore: number;
+  profileCompletion: number;
+  skillGaps: Array<{ name: string; current: number; required: number; gap: number; status: 'met' | 'gap' }>;
+  biggestOpportunity: { name: string; current: number; required: number; gap: number } | null;
+  roadmap: string[];
+  generatedAt: string;
 }
 
 export const studentService = {
@@ -132,6 +143,16 @@ export const studentService = {
     return response.data.data;
   },
 
+  getCareerIntelligence: async (): Promise<CareerIntelligence> => {
+    const response = await api.get('/students/career-intelligence');
+    return response.data.data;
+  },
+
+  getCareerOptions: async (): Promise<string[]> => {
+    const response = await api.get('/students/career-options');
+    return response.data.data;
+  },
+
   // Documents
   uploadResume: async (file: File): Promise<StudentProfile> => {
     const data = new FormData();
@@ -158,7 +179,8 @@ export const studentService = {
   },
 
   getDocumentDownloadUrl: async (type: 'resume' | 'portfolio', documentId?: string): Promise<string> => {
-    const response = await api.get(`/students/documents/${type}${documentId ? `/${documentId}` : ''}`);
+    const path = type === 'resume' ? '/students/documents/resume' : `/students/documents/portfolio/${documentId}`;
+    const response = await api.get(path);
     return response.data.data.url;
   },
 };

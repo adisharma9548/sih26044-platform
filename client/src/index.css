@@ -3,8 +3,8 @@
 
 @layer base {
   body {
-    background-color: #f9fafb;
-    color: #111827;
+    background-color: #f6f9fb;
+    color: #132b40;
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -13,6 +13,21 @@
     border-color: #e5e7eb;
   }
 }
+
+.landing-page { background: #fff; }
+.landing-grid { background-image: linear-gradient(rgba(22, 97, 136, .055) 1px, transparent 1px), linear-gradient(90deg, rgba(22, 97, 136, .055) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(to bottom, black 0%, transparent 92%); }
+.score-ring { width: 104px; height: 104px; display: grid; place-items: center; border-radius: 999px; background: conic-gradient(#159d93 0deg 281deg, #e6f0f2 281deg); position: relative; }
+.score-ring::before { content: ''; position: absolute; inset: 9px; background: white; border-radius: inherit; }
+.score-ring span { position: relative; color: #073b63; display: flex; align-items: baseline; }
+.score-ring b { font-size: 30px; line-height: 1; letter-spacing: -.07em; }
+.score-ring small { font-size: 13px; font-weight: 700; }
+.dashboard-surface { background: #f6f9fb; }
+.intelligence-card { box-shadow: 0 12px 30px rgba(10, 56, 88, .07); }
+.brand-mark { width: 38px; height: 38px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; align-items: end; padding: 8px; border-radius: 10px; background: #e8f6f4; }
+.brand-mark i { display: block; border-radius: 2px; background: #0d7c8a; }
+.brand-mark i:nth-child(1) { height: 44%; }
+.brand-mark i:nth-child(2) { height: 70%; }
+.brand-mark i:nth-child(3) { height: 100%; background: #073b63; }
 
 @layer components {
   .container-custom {

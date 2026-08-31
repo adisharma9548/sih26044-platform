@@ -1,28 +1,59 @@
-# SIH26044 — Portal for Academia–Industry Collaboration
+# SkillBridge — SIH26044
 
-This is a full‑stack platform built for Smart India Hackathon 2024.
+SkillBridge is an Academia–Industry collaboration platform for skill mapping, career readiness, assessments, portfolios, and institutional insight.
 
-## Part 09: Resume and file management
+## Current capabilities
 
-Student documents are uploaded to a private Cloudinary folder; MongoDB stores only the file metadata. The API accepts PDF, DOC, and DOCX files up to 5 MB.
+- Role-based registration and JWT authentication for students, industry, faculty, and institutions
+- Student profile, skills, projects, education, certifications, secure resume, and portfolio documents
+- Career intelligence with readiness, skill gaps, and a target-role roadmap derived from saved student data
+- Institution-created MCQ assessments with server-side scoring and single-attempt protection
+- API-backed role workspaces and institution assessment metrics
+- Responsive SkillBridge interface with a CSS-built brand mark
 
-1. Create a free [Cloudinary account](https://cloudinary.com/users/register_free).
-2. In `server/.env`, add `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` from the Cloudinary dashboard.
-3. Start the API from `server` with `npm run dev`, and the frontend from `client` with `npm run dev`.
+## Local setup
 
-Cloudinary credentials must stay in `server/.env`; never add them to a Vite environment file or commit them to Git.
+Copy `server/.env.example` to `server/.env` and configure MongoDB and JWT values. Keep all secrets out of Git.
 
-## Tech Stack
+For private file storage, add Cloudinary credentials to `server/.env.cloudinary.local`:
 
-- **Frontend:** React, TypeScript, Vite, Tailwind CSS (to be added)
-- **Backend:** Node.js, Express, TypeScript
-- **Database:** MongoDB (to be added)
+```env
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
 
-## Setup
+The local Cloudinary file is ignored by Git. It is loaded after `server/.env`, so its credentials take precedence.
 
-### Frontend
+Start the API:
 
-```bash
+```cmd
+cd server
+npm install
+npm run dev
+```
+
+Start the client in another terminal:
+
+```cmd
 cd client
 npm install
 npm run dev
+```
+
+## Verification
+
+```cmd
+cd server
+npm run build
+```
+
+```cmd
+cd client
+npm run build
+npm run lint
+```
+
+## Development status
+
+Parts 1–10 provide project setup, authentication, profile/portfolio management, secure documents, skills, career intelligence, and assessments. The opportunity marketplace and application lifecycle remain the next major implementation areas.

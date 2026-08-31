@@ -8,6 +8,7 @@ import {
 } from '../models/Student';
 import { ApiError } from '../middlewares/errorHandler';
 import { assertCloudinaryConfigured, cloudinary } from '../config/cloudinary';
+import { CareerIntelligence, CareerIntelligenceService } from './career-intelligence.service';
 
 interface SkillInput {
   name: string;
@@ -18,6 +19,8 @@ interface SkillInput {
 type SkillUpdate = Partial<SkillInput>;
 
 export class StudentService {
+  private careerIntelligence = new CareerIntelligenceService();
+
   // ===== PROFILE =====
   async getProfile(userId: string): Promise<IStudent> {
     const profile = await Student.findOne({ user: userId });
@@ -179,6 +182,12 @@ export class StudentService {
     await profile.save();
     return profile;
   }
+
+  async getCareerIntelligence(userId: string): Promise<CareerIntelligence> {
+    return this.careerIntelligence.getStudentIntelligence(await this.getProfile(userId));
+  }
+
+  getCareerOptions(): string[] { return this.careerIntelligence.getSupportedRoles(); }
 
   // ===== DOCUMENTS =====
   async uploadResume(userId: string, file: Express.Multer.File): Promise<IStudent> {

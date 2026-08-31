@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { config } from './env';
+import { ApiError } from '../middlewares/errorHandler';
 
 cloudinary.config({
   cloud_name: config.cloudinary.cloudName,
@@ -10,7 +11,11 @@ cloudinary.config({
 
 export function assertCloudinaryConfigured(): void {
   if (!config.cloudinary.cloudName || !config.cloudinary.apiKey || !config.cloudinary.apiSecret) {
-    throw new Error('Cloudinary is not configured. Add CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET to server/.env.');
+    throw new ApiError(
+      503,
+      'FILE_STORAGE_NOT_CONFIGURED',
+      'File storage is not configured. Add the Cloudinary credentials to server/.env before uploading documents.'
+    );
   }
 }
 

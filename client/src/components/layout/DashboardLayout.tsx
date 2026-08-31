@@ -14,7 +14,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ sidebarItems }
       <Navbar />
       <div className="flex flex-1">
         <Sidebar items={sidebarItems} />
-        <main className="flex-1 p-6 bg-gray-50">
+        <main className="dashboard-surface flex-1 p-5 sm:p-7">
           <Outlet />
         </main>
       </div>

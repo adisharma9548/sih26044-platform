@@ -60,6 +60,7 @@ export interface IStudent extends Document {
   enrollmentNumber: string;
   department: string;
   year: number;
+  targetRole: string;
   education: IEducation[];
   skills: ISkill[];
   projects: IProject[];
@@ -80,6 +81,7 @@ const StudentSchema = new Schema<IStudent>(
     enrollmentNumber: { type: String, required: true, unique: true },
     department: { type: String, required: true },
     year: { type: Number, required: true, min: 1, max: 5 },
+    targetRole: { type: String, default: 'Full Stack Developer', trim: true, maxlength: 100 },
     education: [
       {
         degree: { type: String, required: true },

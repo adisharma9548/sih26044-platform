@@ -1,49 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '../components/common/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/common/Card';
 
-export const HomePage: React.FC = () => {
-  return (
-    <div className="space-y-12">
-      <section className="text-center py-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-          Bridge the Gap Between <br />
-          <span className="text-primary-600">Academia & Industry</span>
-        </h1>
-        <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
-          Skill mapping, internships, placements — all in one platform for students, faculty, and recruiters.
-        </p>
-        <div className="mt-8 flex justify-center gap-4">
-          <Link to="/register">
-            <Button size="lg">Get Started</Button>
-          </Link>
-          <Link to="/login">
-            <Button variant="outline" size="lg">Sign In</Button>
-          </Link>
-        </div>
-      </section>
+const roles = [
+  ['01', 'Student', 'Map your skills, build proof of work, and find opportunities that fit.', '→'],
+  ['02', 'Industry', 'Find verified, skill-matched candidates and build your talent pipeline.', '↗'],
+  ['03', 'Academician', 'Bring live industry context, mentorship and research to your campus.', '↗'],
+  ['04', 'Institution', 'Turn placement and skill data into curriculum decisions.', '↗'],
+];
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card hover>
-          <CardHeader><CardTitle>For Students</CardTitle></CardHeader>
-          <CardContent>
-            <p className="text-gray-600">Build your profile, showcase skills, get matched with internships and jobs.</p>
-          </CardContent>
-        </Card>
-        <Card hover>
-          <CardHeader><CardTitle>For Recruiters</CardTitle></CardHeader>
-          <CardContent>
-            <p className="text-gray-600">Post opportunities, find the right talent, manage applications efficiently.</p>
-          </CardContent>
-        </Card>
-        <Card hover>
-          <CardHeader><CardTitle>For Faculty & Institutions</CardTitle></CardHeader>
-          <CardContent>
-            <p className="text-gray-600">Foster industry collaborations, mentor students, track placements.</p>
-          </CardContent>
-        </Card>
-      </section>
-    </div>
-  );
-};
+export const HomePage: React.FC = () => (
+  <div className="landing-page -mx-4 sm:-mx-6 lg:-mx-8">
+    <section className="relative overflow-hidden px-5 pb-20 pt-16 sm:px-10 lg:px-16 lg:pb-28 lg:pt-24">
+      <div className="landing-grid absolute inset-0 opacity-70" />
+      <div className="relative mx-auto max-w-6xl">
+        <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#bfdbfe] bg-white px-3 py-1.5 text-xs font-semibold text-[#0f5d80] shadow-sm"><span className="h-2 w-2 rounded-full bg-[#14a49b]" /> India's academia–industry network</div>
+        <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_.7fr]"><div><h1 className="max-w-4xl text-5xl font-bold leading-[1.04] tracking-[-0.055em] text-[#092b4c] sm:text-6xl lg:text-7xl">Turn academic skills into <span className="text-[#0d7c8a]">industry opportunities.</span></h1><p className="mt-7 max-w-2xl text-lg leading-8 text-slate-600">SkillBridge brings assessment, learning, portfolios and opportunity matching together—so every learner can see a clearer path forward.</p><div className="mt-9 flex flex-wrap gap-3"><Link to="/register" className="rounded-lg bg-[#073b63] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(7,59,99,.2)] transition hover:bg-[#052f50]">Start your journey <span className="ml-2">→</span></Link><Link to="/login" className="rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-[#0d7c8a] hover:text-[#0d7c8a]">Explore the platform</Link></div></div><div className="relative rounded-2xl border border-[#dbeafe] bg-white p-5 shadow-[0_24px_64px_rgba(13,69,104,.12)]"><p className="text-xs font-semibold uppercase tracking-[.16em] text-slate-500">Career intelligence snapshot</p><div className="mt-5 flex items-center gap-5"><div className="score-ring"><span><b>78</b><small>%</small></span></div><div><p className="font-semibold text-[#092b4c]">Career readiness</p><p className="mt-1 text-sm text-slate-500">Full Stack Developer</p><div className="mt-3 inline-flex rounded-md bg-teal-50 px-2 py-1 text-xs font-semibold text-[#087a73]">+12% this month</div></div></div><div className="mt-6 border-t border-slate-100 pt-4"><div className="flex items-center justify-between text-sm"><span className="text-slate-500">Next best action</span><span className="font-semibold text-[#0d7c8a]">Close AWS gap →</span></div></div></div></div>
+      </div>
+    </section>
+    <section className="border-y border-slate-200 bg-white px-5 py-7 sm:px-10 lg:px-16"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 text-sm font-medium text-slate-500"><span className="font-semibold text-[#173f5e]">One connected ecosystem</span><span>Skills</span><i>→</i><span>Learning</span><i>→</i><span>Opportunities</span><i>→</i><span>Experience</span><i>→</i><span>Career</span></div></section>
+    <section className="bg-[#f7fafc] px-5 py-20 sm:px-10 lg:px-16"><div className="mx-auto max-w-6xl"><p className="text-xs font-bold uppercase tracking-[.16em] text-[#0d7c8a]">Built for every stakeholder</p><div className="mt-3 flex flex-wrap items-end justify-between gap-6"><h2 className="max-w-xl text-3xl font-bold tracking-tight text-[#092b4c] sm:text-4xl">A shared language for skills, evidence and outcomes.</h2><p className="max-w-sm text-sm leading-6 text-slate-500">Each view is tailored to a role, while every decision is informed by the same verified skill intelligence.</p></div><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{roles.map(([number, title, copy, arrow]) => <Link to="/register" key={title} className="group rounded-xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:border-[#9dd9d4] hover:shadow-lg"><div className="flex items-center justify-between text-xs font-semibold text-[#0d7c8a]"><span>{number}</span><span className="text-lg transition group-hover:translate-x-1">{arrow}</span></div><h3 className="mt-10 text-lg font-bold text-[#092b4c]">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-500">{copy}</p></Link>)}</div></div></section>
+    <section className="bg-[#073b63] px-5 py-16 text-center sm:px-10"><p className="text-sm font-semibold text-[#7ae1d9]">Skills that lead somewhere</p><h2 className="mx-auto mt-3 max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">Make every skill visible. Make every opportunity relevant.</h2><Link to="/register" className="mt-7 inline-block rounded-lg bg-[#19a69b] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#118a80]">Create your SkillBridge profile</Link></section>
+  </div>
+);

@@ -6,6 +6,18 @@ import { ApiError } from '../middlewares/errorHandler';
 const studentService = new StudentService();
 
 export class StudentController {
+  async getCareerIntelligence(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const intelligence = await studentService.getCareerIntelligence(req.user!.userId);
+      res.status(200).json(sendSuccess(intelligence, 'Career intelligence generated successfully'));
+    } catch (error) { next(error); }
+  }
+
+  async getCareerOptions(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try { res.status(200).json(sendSuccess(studentService.getCareerOptions(), 'Career options fetched successfully')); }
+    catch (error) { next(error); }
+  }
+
   // ===== PROFILE =====
   async getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -192,8 +204,7 @@ export class StudentController {
 
   async getDocumentDownloadUrl(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const type = req.params.type as 'resume' | 'portfolio';
-      if (type !== 'resume' && type !== 'portfolio') throw new ApiError(400, 'INVALID_DOCUMENT_TYPE', 'Invalid document type');
+      const type = req.params.id ? 'portfolio' : 'resume';
       const url = await studentService.getDocumentDownloadUrl(req.user!.userId, type, req.params.id as string | undefined);
       res.status(200).json(sendSuccess({ url }, 'Temporary download URL created'));
     } catch (error) { next(error); }
