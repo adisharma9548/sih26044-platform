@@ -1,23 +1,20 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IFaculty extends Document {
-  user?: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
   name: string;
   department: string;
   designation: string;
+  institution: string;
 }
 
 const FacultySchema = new Schema<IFaculty>(
   {
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      unique: true,
-      sparse: true, // ← CRITICAL
-    },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
     name: { type: String, required: true },
     department: { type: String, required: true },
     designation: { type: String, required: true },
+    institution: { type: String, required: true },
   },
   { timestamps: true }
 );

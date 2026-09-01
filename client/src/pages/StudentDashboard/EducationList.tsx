@@ -1,65 +1,65 @@
-import React, { useState } from 'react';
-import { studentService, type Education } from '../../services/student.service';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/common/Card';
-import { Input } from '../../components/common/Input';
-import { Button } from '../../components/common/Button';
+import React, { useState } from 'react'
+import { studentService, type Education } from '../../services/student.service'
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/common/Card'
+import { Input } from '../../components/common/Input'
+import { Button } from '../../components/common/Button'
 
 interface Props {
-  education: Education[];
-  onUpdate: () => void;
+  education: Education[]
+  onUpdate: () => void
 }
 
 export const EducationList: React.FC<Props> = ({ education, onUpdate }) => {
-  const [isAdding, setIsAdding] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isAdding, setIsAdding] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     degree: '',
     institution: '',
     year: new Date().getFullYear(),
     score: '',
-  });
-  const [loading, setLoading] = useState(false);
+  })
+  const [loading, setLoading] = useState(false)
 
   const resetForm = () => {
-    setFormData({ degree: '', institution: '', year: new Date().getFullYear(), score: '' });
-    setIsAdding(false);
-    setEditingId(null);
-  };
+    setFormData({ degree: '', institution: '', year: new Date().getFullYear(), score: '' })
+    setIsAdding(false)
+    setEditingId(null)
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: name === 'year' ? parseInt(value) || 0 : value }));
-  };
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: name === 'year' ? parseInt(value) || 0 : value }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
     try {
       if (editingId) {
-        await studentService.updateEducation(editingId, formData);
+        await studentService.updateEducation(editingId, formData)
       } else {
-        await studentService.addEducation(formData);
+        await studentService.addEducation(formData)
       }
-      resetForm();
-      onUpdate();
+      resetForm()
+      onUpdate()
     } catch (err) {
-      console.error('Failed to save education:', err);
-      alert('Failed to save education. Please try again.');
+      console.error('Failed to save education:', err)
+      alert('Failed to save education. Please try again.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this education entry?')) return;
+    if (!confirm('Delete this education entry?')) return
     try {
-      await studentService.deleteEducation(id);
-      onUpdate();
+      await studentService.deleteEducation(id)
+      onUpdate()
     } catch (err) {
-      console.error('Failed to delete education:', err);
-      alert('Failed to delete education. Please try again.');
+      console.error('Failed to delete education:', err)
+      alert('Failed to delete education. Please try again.')
     }
-  };
+  }
 
   const handleEdit = (edu: Education) => {
     setFormData({
@@ -67,22 +67,22 @@ export const EducationList: React.FC<Props> = ({ education, onUpdate }) => {
       institution: edu.institution,
       year: edu.year,
       score: edu.score || '',
-    });
-    setEditingId(edu._id || null);
-    setIsAdding(true);
-  };
+    })
+    setEditingId(edu._id || null)
+    setIsAdding(true)
+  }
 
   return (
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle>Education</CardTitle>
+          <CardTitle className="dark:text-white">Education</CardTitle>
           {!isAdding && <Button size="sm" onClick={() => setIsAdding(true)}>Add Education</Button>}
         </div>
       </CardHeader>
       <CardContent>
         {isAdding && (
-          <form onSubmit={handleSubmit} className="space-y-3 mb-4 p-4 bg-gray-50 rounded-lg">
+          <form onSubmit={handleSubmit} className="space-y-3 mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <Input
               label="Degree"
               name="degree"
@@ -124,14 +124,14 @@ export const EducationList: React.FC<Props> = ({ education, onUpdate }) => {
 
         <div className="space-y-3">
           {education.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">No education entries yet</p>
+            <p className="text-gray-500 dark:text-gray-400 text-center py-4">No education entries yet</p>
           ) : (
             education.map((edu) => (
-              <div key={edu._id} className="flex justify-between items-start p-3 border rounded-lg hover:bg-gray-50">
+              <div key={edu._id} className="flex justify-between items-start p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
                 <div>
-                  <p className="font-medium">{edu.degree}</p>
-                  <p className="text-sm text-gray-600">{edu.institution}</p>
-                  <p className="text-sm text-gray-500">{edu.year} {edu.score && `· ${edu.score}`}</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{edu.degree}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">{edu.institution}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{edu.year} {edu.score && `· ${edu.score}`}</p>
                 </div>
                 <div className="flex space-x-2">
                   <Button size="sm" variant="outline" onClick={() => handleEdit(edu)}>Edit</Button>
@@ -143,7 +143,7 @@ export const EducationList: React.FC<Props> = ({ education, onUpdate }) => {
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default EducationList;
+export default EducationList

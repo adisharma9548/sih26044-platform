@@ -1,8 +1,7 @@
-
 import { Request, Response, NextFunction } from 'express';
 import { sendError } from '../utils/response';
+import { logger } from '../utils/logger';
 
-// Base custom error class (will be extended later)
 export class ApiError extends Error {
   public statusCode: number;
   public code: string;
@@ -17,16 +16,9 @@ export class ApiError extends Error {
   }
 }
 
-// Global error handler middleware
-export function errorHandler(
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
-  console.error('Error:', err);
+export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+  logger.error('Error:', err);
 
-  // Default values for unknown errors
   let statusCode = 500;
   let code = 'INTERNAL_SERVER_ERROR';
   let message = 'Something went wrong';
@@ -37,18 +29,12 @@ export function errorHandler(
     code = err.code;
     message = err.message;
     details = err.details || null;
-  } else if (err.code === 'LIMIT_FILE_SIZE') {
-    statusCode = 400;
-    code = 'FILE_TOO_LARGE';
-    message = 'Files must be 5 MB or smaller';
   } else if (err.name === 'ValidationError') {
-    // Mongoose validation error (will be useful later)
     statusCode = 400;
     code = 'VALIDATION_ERROR';
     message = err.message;
     details = err.errors;
   } else if (err.code === 11000) {
-    // MongoDB duplicate key error
     statusCode = 409;
     code = 'DUPLICATE_KEY';
     message = 'Duplicate entry found';
@@ -56,4 +42,4 @@ export function errorHandler(
   }
 
   res.status(statusCode).json(sendError(code, message, details));
-}
+};

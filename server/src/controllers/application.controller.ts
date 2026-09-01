@@ -1,13 +1,48 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { ApplicationService } from '../services/application.service';
 import { sendSuccess } from '../utils/response';
 
 const applicationService = new ApplicationService();
 
-export class ApplicationController {
-  async apply(req: Request, res: Response, next: NextFunction): Promise<void> { try { res.status(201).json(sendSuccess(await applicationService.apply(req.user!.userId, req.params.opportunityId as string, req.body.coverNote), 'Application submitted successfully')); } catch (error) { next(error); } }
-  async listMine(req: Request, res: Response, next: NextFunction): Promise<void> { try { res.status(200).json(sendSuccess(await applicationService.listForStudent(req.user!.userId), 'Applications fetched successfully')); } catch (error) { next(error); } }
-  async withdraw(req: Request, res: Response, next: NextFunction): Promise<void> { try { res.status(200).json(sendSuccess(await applicationService.withdraw(req.user!.userId, req.params.id as string), 'Application withdrawn successfully')); } catch (error) { next(error); } }
-  async listForOpportunity(req: Request, res: Response, next: NextFunction): Promise<void> { try { res.status(200).json(sendSuccess(await applicationService.listForRecruiter(req.user!.userId, req.params.opportunityId as string), 'Applicants fetched successfully')); } catch (error) { next(error); } }
-  async updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> { try { res.status(200).json(sendSuccess(await applicationService.updateStatus(req.user!.userId, req.params.id as string, req.body.status), 'Application status updated successfully')); } catch (error) { next(error); } }
-}
+export const apply = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.userId;
+    const internshipId = req.params.internshipId as string; // ✅ explicit cast
+    const application = await applicationService.apply(userId, internshipId, req.body);
+    res.status(201).json(sendSuccess(application, 'Application submitted'));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMyApplications = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.userId;
+    const apps = await applicationService.getStudentApplications(userId);
+    res.status(200).json(sendSuccess(apps, 'Applications fetched'));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getInternshipApplications = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user!.userId;
+    const internshipId = req.params.internshipId as string; // ✅ explicit cast
+    const apps = await applicationService.getInternshipApplications(internshipId, userId);
+    res.status(200).json(sendSuccess(apps, 'Applications fetched'));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateStatus = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = req.params.id as string; // ✅ explicit cast
+    const { status, note } = req.body;
+    const app = await applicationService.updateStatus(id, status, note);
+    res.status(200).json(sendSuccess(app, 'Application status updated'));
+  } catch (error) {
+    next(error);
+  }
+};

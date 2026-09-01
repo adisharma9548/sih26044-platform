@@ -1,85 +1,85 @@
-import React, { useState } from 'react';
-import { studentService, type Certification } from '../../services/student.service';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/common/Card';
-import { Input } from '../../components/common/Input';
-import { Button } from '../../components/common/Button';
+import React, { useState } from 'react'
+import { studentService, type Certification } from '../../services/student.service'
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/common/Card'
+import { Input } from '../../components/common/Input'
+import { Button } from '../../components/common/Button'
 
 interface Props {
-  certifications: Certification[];
-  onUpdate: () => void;
+  certifications: Certification[]
+  onUpdate: () => void
 }
 
 export const CertificationsList: React.FC<Props> = ({ certifications, onUpdate }) => {
-  const [isAdding, setIsAdding] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isAdding, setIsAdding] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     issuer: '',
     link: '',
-  });
-  const [loading, setLoading] = useState(false);
+  })
+  const [loading, setLoading] = useState(false)
 
   const resetForm = () => {
-    setFormData({ name: '', issuer: '', link: '' });
-    setIsAdding(false);
-    setEditingId(null);
-  };
+    setFormData({ name: '', issuer: '', link: '' })
+    setIsAdding(false)
+    setEditingId(null)
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
     try {
       if (editingId) {
-        await studentService.updateCertification(editingId, formData);
+        await studentService.updateCertification(editingId, formData)
       } else {
-        await studentService.addCertification(formData);
+        await studentService.addCertification(formData)
       }
-      resetForm();
-      onUpdate();
+      resetForm()
+      onUpdate()
     } catch (err) {
-      console.error('Failed to save certification:', err);
-      alert('Failed to save certification. Please try again.');
+      console.error('Failed to save certification:', err)
+      alert('Failed to save certification. Please try again.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this certification?')) return;
+    if (!confirm('Delete this certification?')) return
     try {
-      await studentService.deleteCertification(id);
-      onUpdate();
+      await studentService.deleteCertification(id)
+      onUpdate()
     } catch (err) {
-      console.error('Failed to delete certification:', err);
-      alert('Failed to delete certification. Please try again.');
+      console.error('Failed to delete certification:', err)
+      alert('Failed to delete certification. Please try again.')
     }
-  };
+  }
 
   const handleEdit = (cert: Certification) => {
     setFormData({
       name: cert.name,
       issuer: cert.issuer,
       link: cert.link || '',
-    });
-    setEditingId(cert._id || null);
-    setIsAdding(true);
-  };
+    })
+    setEditingId(cert._id || null)
+    setIsAdding(true)
+  }
 
   return (
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle>Certifications</CardTitle>
+          <CardTitle className="dark:text-white">Certifications</CardTitle>
           {!isAdding && <Button size="sm" onClick={() => setIsAdding(true)}>Add Certification</Button>}
         </div>
       </CardHeader>
       <CardContent>
         {isAdding && (
-          <form onSubmit={handleSubmit} className="space-y-3 mb-4 p-4 bg-gray-50 rounded-lg">
+          <form onSubmit={handleSubmit} className="space-y-3 mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <Input
               label="Certification Name"
               name="name"
@@ -112,15 +112,15 @@ export const CertificationsList: React.FC<Props> = ({ certifications, onUpdate }
 
         <div className="space-y-3">
           {certifications.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">No certifications yet</p>
+            <p className="text-gray-500 dark:text-gray-400 text-center py-4">No certifications yet</p>
           ) : (
             certifications.map((cert) => (
-              <div key={cert._id} className="flex justify-between items-start p-3 border rounded-lg hover:bg-gray-50">
+              <div key={cert._id} className="flex justify-between items-start p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
                 <div>
-                  <p className="font-medium">{cert.name}</p>
-                  <p className="text-sm text-gray-600">{cert.issuer}</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{cert.name}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">{cert.issuer}</p>
                   {cert.link && (
-                    <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-sm text-primary-600 hover:underline">
+                    <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-sm text-primary-600 dark:text-primary-400 hover:underline">
                       Verify
                     </a>
                   )}
@@ -135,7 +135,7 @@ export const CertificationsList: React.FC<Props> = ({ certifications, onUpdate }
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default CertificationsList;
+export default CertificationsList

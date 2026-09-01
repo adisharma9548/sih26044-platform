@@ -1,38 +1,32 @@
 {
-  "name": "server",
+  "name": "sih26044-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend for Academia-Industry Collaboration Platform",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/index.js",
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
-    "migrate:skills": "ts-node scripts/migrateSkills.ts"
+    "start": "node dist/index.js",
+    "seed": "ts-node seed.ts"
   },
-  "keywords": [],
-  "type": "commonjs",
   "dependencies": {
-    "@types/multer": "^2.2.0",
-    "bcrypt": "^6.0.0",
-    "cloudinary": "^2.11.0",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.9.4",
-    "multer": "^2.3.0"
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0"
   },
   "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^26.4.0",
-    "nodemon": "^3.1.14",
+    "@types/express": "^5.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.10.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
-  },
-  "allowScripts": {
-    "bcrypt@6.0.0": true
+    "nodemon": "^3.1.9",
+    "typescript": "^5.7.2"
   }
 }

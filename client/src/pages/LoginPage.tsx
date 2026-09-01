@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Input } from '../components/common/Input';
-import { Button } from '../components/common/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/common/Card';
 import { useAuth } from '../contexts/AuthContext';
+import { Button } from '../components/common/Button';
+import { Input } from '../components/common/Input';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/common/Card';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -19,54 +19,28 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
     try {
       await login(email, password);
-      // Redirect based on role (we'll handle in App.tsx with a dashboard redirect)
-      navigate('/dashboard'); // This will be a protected route that redirects to role-specific dashboard
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Invalid credentials');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12">
+    <div className="max-w-md mx-auto mt-16">
       <Card>
-        <CardHeader>
-          <CardTitle className="text-center">Welcome Back</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle className="text-center">Welcome Back</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
-            <Input
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              fullWidth
-              required
-            />
-            <Input
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              fullWidth
-              required
-            />
-            <Button type="submit" fullWidth size="lg" loading={loading}>
-              Sign In
-            </Button>
+            {error && <div className="bg-danger-bg text-danger p-3 rounded-lg text-sm">{error}</div>}
+            <Input label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} fullWidth required />
+            <Input label="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} fullWidth required />
+            <Button type="submit" fullWidth size="lg" loading={loading}>Sign In</Button>
           </form>
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-primary-600 hover:underline">
-              Register
-            </Link>
-          </p>
+          <div className="mt-4 text-center text-body-sm text-muted">
+            Don't have an account? <Link to="/register" className="text-primary hover:underline">Register</Link>
+          </div>
         </CardContent>
       </Card>
     </div>

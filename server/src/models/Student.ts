@@ -1,19 +1,13 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-export const SKILL_CATEGORIES = [
-  'Programming',
-  'Design',
-  'Data Science',
-  'Cloud',
-  'DevOps',
-  'Soft Skills',
-  'Other',
-] as const;
-
-export const SKILL_LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Expert'] as const;
-
-export type SkillCategory = (typeof SKILL_CATEGORIES)[number];
-export type SkillLevel = (typeof SKILL_LEVELS)[number];
+export interface ISkillEntry {
+  _id?: string;
+  name: string;
+  category: 'programming' | 'design' | 'data-science' | 'cloud' | 'devops' | 'soft-skills' | 'other';
+  level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  verified: boolean;
+  evidenceUrl?: string;
+}
 
 export interface IEducation {
   _id?: string;
@@ -23,19 +17,12 @@ export interface IEducation {
   score?: string;
 }
 
-export interface ISkill {
-  _id?: string;
-  name: string;
-  category: SkillCategory;
-  level: SkillLevel;
-  verified: boolean;
-}
-
 export interface IProject {
   _id?: string;
   title: string;
   description: string;
   link?: string;
+  technologies?: string[];
 }
 
 export interface ICertification {
@@ -43,45 +30,32 @@ export interface ICertification {
   name: string;
   issuer: string;
   link?: string;
-}
-
-export interface IFileMetadata {
-  _id?: string;
-  publicId: string;
-  originalName: string;
-  mimeType: string;
-  size: number;
-  uploadedAt: Date;
+  verified?: boolean;
 }
 
 export interface IStudent extends Document {
-  user?: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
   name: string;
   enrollmentNumber: string;
   department: string;
   year: number;
-  targetRole: string;
   education: IEducation[];
-  skills: ISkill[];
+  skills: ISkillEntry[];
   projects: IProject[];
   certifications: ICertification[];
-  resume?: IFileMetadata;
-  portfolioDocuments: IFileMetadata[];
+  resumeUrl?: string;
+  portfolioUrl?: string;
+  targetRole?: string;
+  careerReadiness?: number;
 }
 
 const StudentSchema = new Schema<IStudent>(
   {
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      unique: true,
-      sparse: true,
-    },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
     name: { type: String, required: true },
     enrollmentNumber: { type: String, required: true, unique: true },
     department: { type: String, required: true },
     year: { type: Number, required: true, min: 1, max: 5 },
-    targetRole: { type: String, default: 'Full Stack Developer', trim: true, maxlength: 100 },
     education: [
       {
         degree: { type: String, required: true },
@@ -95,15 +69,16 @@ const StudentSchema = new Schema<IStudent>(
         name: { type: String, required: true },
         category: {
           type: String,
-          enum: SKILL_CATEGORIES,
-          default: 'Other',
+          enum: ['programming', 'design', 'data-science', 'cloud', 'devops', 'soft-skills', 'other'],
+          default: 'other',
         },
         level: {
           type: String,
-          enum: SKILL_LEVELS,
-          default: 'Beginner',
+          enum: ['beginner', 'intermediate', 'advanced', 'expert'],
+          default: 'beginner',
         },
         verified: { type: Boolean, default: false },
+        evidenceUrl: { type: String },
       },
     ],
     projects: [
@@ -111,6 +86,7 @@ const StudentSchema = new Schema<IStudent>(
         title: { type: String, required: true },
         description: { type: String, required: true },
         link: { type: String },
+        technologies: [{ type: String }],
       },
     ],
     certifications: [
@@ -118,24 +94,13 @@ const StudentSchema = new Schema<IStudent>(
         name: { type: String, required: true },
         issuer: { type: String, required: true },
         link: { type: String },
+        verified: { type: Boolean, default: false },
       },
     ],
-    resume: {
-      publicId: { type: String },
-      originalName: { type: String },
-      mimeType: { type: String },
-      size: { type: Number },
-      uploadedAt: { type: Date },
-    },
-    portfolioDocuments: [
-      {
-        publicId: { type: String, required: true },
-        originalName: { type: String, required: true },
-        mimeType: { type: String, required: true },
-        size: { type: Number, required: true },
-        uploadedAt: { type: Date, required: true },
-      },
-    ],
+    resumeUrl: { type: String },
+    portfolioUrl: { type: String },
+    targetRole: { type: String },
+    careerReadiness: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

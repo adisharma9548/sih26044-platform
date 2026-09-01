@@ -14,21 +14,6 @@
   }
 }
 
-.landing-page { background: #fff; }
-.landing-grid { background-image: linear-gradient(rgba(22, 97, 136, .055) 1px, transparent 1px), linear-gradient(90deg, rgba(22, 97, 136, .055) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(to bottom, black 0%, transparent 92%); }
-.score-ring { width: 104px; height: 104px; display: grid; place-items: center; border-radius: 999px; background: conic-gradient(#159d93 0deg 281deg, #e6f0f2 281deg); position: relative; }
-.score-ring::before { content: ''; position: absolute; inset: 9px; background: white; border-radius: inherit; }
-.score-ring span { position: relative; color: #073b63; display: flex; align-items: baseline; }
-.score-ring b { font-size: 30px; line-height: 1; letter-spacing: -.07em; }
-.score-ring small { font-size: 13px; font-weight: 700; }
-.dashboard-surface { background: #f6f9fb; }
-.intelligence-card { box-shadow: 0 12px 30px rgba(10, 56, 88, .07); }
-.brand-mark { width: 38px; height: 38px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; align-items: end; padding: 8px; border-radius: 10px; background: #e8f6f4; }
-.brand-mark i { display: block; border-radius: 2px; background: #0d7c8a; }
-.brand-mark i:nth-child(1) { height: 44%; }
-.brand-mark i:nth-child(2) { height: 70%; }
-.brand-mark i:nth-child(3) { height: 100%; background: #073b63; }
-
 @layer components {
   .container-custom {
     max-width: 80rem;
@@ -51,17 +36,14 @@
   }
 }
 
-/* ===== DARK MODE OVERRIDES (Robust) ===== */
+/* Dark mode overrides */
 .dark {
   color-scheme: dark;
 }
-
 .dark body {
   background-color: #111827;
   color: #f9fafb;
 }
-
-/* Cards & containers */
 .dark .bg-white {
   background-color: #1f2937 !important;
 }
@@ -77,42 +59,34 @@
 .dark .shadow-sm {
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.5) !important;
 }
-
-/* Text colors – all shades */
-.dark .text-gray-900,
-.dark .text-gray-800,
-.dark .text-gray-700,
-.dark .text-gray-600,
-.dark .text-gray-500,
-.dark .text-gray-400,
-.dark .text-gray-300,
-.dark .text-gray-200,
-.dark .text-gray-100 {
-  color: inherit !important;
+.dark .text-gray-900 {
+  color: #f9fafb !important;
 }
-
-.dark .text-gray-900 { color: #f9fafb !important; }
-.dark .text-gray-800 { color: #e5e7eb !important; }
-.dark .text-gray-700 { color: #d1d5db !important; }
-.dark .text-gray-600 { color: #9ca3af !important; }
-.dark .text-gray-500 { color: #9ca3af !important; }
-.dark .text-gray-400 { color: #6b7280 !important; }
-
-/* Headings */
+.dark .text-gray-800 {
+  color: #e5e7eb !important;
+}
+.dark .text-gray-700 {
+  color: #d1d5db !important;
+}
+.dark .text-gray-600 {
+  color: #9ca3af !important;
+}
+.dark .text-gray-500 {
+  color: #9ca3af !important;
+}
+.dark .text-gray-400 {
+  color: #6b7280 !important;
+}
 .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6,
 .dark .text-xl, .dark .text-2xl, .dark .text-3xl,
 .dark .font-bold, .dark .font-semibold {
   color: #f9fafb !important;
 }
-
-/* Labels and small text */
 .dark label,
 .dark .block.text-sm,
 .dark .text-sm.font-medium {
   color: #d1d5db !important;
 }
-
-/* Inputs, selects, textareas */
 .dark input,
 .dark select,
 .dark textarea {
@@ -126,16 +100,12 @@
   border-color: #3b82f6 !important;
   outline: none !important;
 }
-
-/* Buttons – primary variant */
 .dark .bg-primary-600 {
   background-color: #2563eb !important;
 }
 .dark .bg-primary-600:hover {
   background-color: #1d4ed8 !important;
 }
-
-/* Buttons – outline variant */
 .dark .border-gray-300 {
   border-color: #4b5563 !important;
 }
@@ -145,13 +115,9 @@
 .dark .hover\:bg-gray-50:hover {
   background-color: #374151 !important;
 }
-
-/* Dropdown items */
 .dark .hover\:bg-gray-100:hover {
   background-color: #374151 !important;
 }
-
-/* Badges */
 .dark .bg-red-50 { background-color: #7f1d1d !important; }
 .dark .text-red-700 { color: #fca5a5 !important; }
 .dark .bg-yellow-100 { background-color: #78350f !important; }
@@ -162,8 +128,6 @@
 .dark .text-blue-700 { color: #93c5fd !important; }
 .dark .bg-gray-200 { background-color: #4b5563 !important; }
 .dark .text-gray-700 { color: #d1d5db !important; }
-
-/* Cards and modals */
 .dark .bg-white.rounded-xl {
   background-color: #1f2937 !important;
 }

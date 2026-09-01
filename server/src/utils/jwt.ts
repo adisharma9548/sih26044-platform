@@ -1,7 +1,5 @@
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-key-change-in-production';
-const JWT_EXPIRES_IN = '7d';
+import { config } from '../config/env';
 
 export interface TokenPayload {
   userId: string;
@@ -9,10 +7,11 @@ export interface TokenPayload {
   role: string;
 }
 
-export function generateToken(payload: TokenPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-}
+export const generateToken = (payload: TokenPayload): string => {
+  // Type assertion to avoid overload confusion
+  return jwt.sign(payload, config.jwtSecret, { expiresIn: config.jwtExpiresIn as any });
+};
 
-export function verifyToken(token: string): TokenPayload {
-  return jwt.verify(token, JWT_SECRET) as TokenPayload;
-}
+export const verifyToken = (token: string): TokenPayload => {
+  return jwt.verify(token, config.jwtSecret) as TokenPayload;
+};

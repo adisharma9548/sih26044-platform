@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken, TokenPayload } from '../utils/jwt';
-import { ApiError } from './errorHandler';
+import { sendError } from '../utils/response';
 
 declare global {
   namespace Express {
@@ -10,36 +10,29 @@ declare global {
   }
 }
 
-export function authenticate(req: Request, res: Response, next: NextFunction): void {
+export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new ApiError(401, 'MISSING_TOKEN', 'Authentication token is missing');
+      return res.status(401).json(sendError('MISSING_TOKEN', 'Authentication required'));
     }
-
     const token = authHeader.split(' ')[1];
     const decoded = verifyToken(token);
     req.user = decoded;
     next();
   } catch (error) {
-    if (error instanceof Error && error.name === 'JsonWebTokenError') {
-      next(new ApiError(401, 'INVALID_TOKEN', 'Invalid or expired token'));
-    } else {
-      next(error);
-    }
+    return res.status(401).json(sendError('INVALID_TOKEN', 'Invalid or expired token'));
   }
-}
+};
 
-export function authorize(...allowedRoles: string[]) {
-  return (req: Request, res: Response, next: NextFunction): void => {
+export const authorize = (...allowedRoles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
-      throw new ApiError(401, 'UNAUTHORIZED', 'User not authenticated');
+      return res.status(401).json(sendError('UNAUTHORIZED', 'Not authenticated'));
     }
-
     if (!allowedRoles.includes(req.user.role)) {
-      throw new ApiError(403, 'FORBIDDEN', 'Insufficient permissions');
+      return res.status(403).json(sendError('FORBIDDEN', 'Insufficient permissions'));
     }
-
     next();
   };
-}
+};

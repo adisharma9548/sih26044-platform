@@ -1,31 +1,23 @@
 import React from 'react';
+import { cn } from '../../lib/utils';
 
-interface CardProps {
-  children: React.ReactNode;
-  className?: string;
-  hover?: boolean;
-}
-
-export const Card: React.FC<CardProps> = ({ children, className = '', hover = false }) => {
-  return (
-    <div className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 ${hover ? 'hover:shadow-md transition-shadow duration-200' : ''} ${className}`}>
-      {children}
-    </div>
+export const Card: React.FC<{ children: React.ReactNode; className?: string; hover?: boolean }> =
+  ({ children, className, hover = false }) => (
+    <div className={cn(
+      'bg-surface border border-border rounded-lg p-6 transition-all duration-200',
+      hover && 'hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5',
+      className
+    )}>{children}</div>
   );
-};
 
-export const CardHeader: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={`border-b border-gray-200 pb-4 mb-4 ${className}`}>{children}</div>
+export const CardHeader: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+  <div className={cn('flex items-center justify-between pb-4 border-b border-border', className)}>{children}</div>
 );
 
-export const CardTitle: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <h3 className={`text-lg font-semibold text-gray-900 dark:text-white ${className}`}>{children}</h3>
+export const CardTitle: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+  <h3 className={cn('text-h3 font-semibold', className)}>{children}</h3>
 );
 
-export const CardContent: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={className}>{children}</div>
-);
-
-export const CardFooter: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={`border-t border-gray-200 pt-4 mt-4 ${className}`}>{children}</div>
+export const CardContent: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+  <div className={cn('pt-4', className)}>{children}</div>
 );

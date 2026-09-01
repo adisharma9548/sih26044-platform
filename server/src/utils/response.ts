@@ -7,28 +7,17 @@ export interface ApiResponse<T = any> {
   timestamp: string;
 }
 
-export function sendSuccess<T>(
-  data: T,
-  message = 'Operation successful'
-): ApiResponse<T> {
-  return {
-    success: true,
-    data,
-    message,
-    timestamp: new Date().toISOString(),
-  };
-}
+export const sendSuccess = <T>(data: T, message = 'Success'): ApiResponse<T> => ({
+  success: true,
+  data,
+  message,
+  timestamp: new Date().toISOString(),
+});
 
-export function sendError(
-  error: string,
-  message: string,
-  details: any = null
-): ApiResponse {
-  return {
-    success: false,
-    error,
-    message,
-    details,
-    timestamp: new Date().toISOString(),
-  };
-}
+export const sendError = (error: string, message: string, details?: any): ApiResponse => ({
+  success: false,
+  error,
+  message,
+  details,
+  timestamp: new Date().toISOString(),
+});

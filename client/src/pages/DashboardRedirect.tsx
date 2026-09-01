@@ -3,16 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export const DashboardRedirect: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!isAuthenticated) { navigate('/login'); return; }
     if (user) {
-      navigate(`/${user.role}/dashboard`);
-    } else {
-      navigate('/login');
+      const roleMap: Record<string, string> = {
+        student: '/student/dashboard',
+        recruiter: '/recruiter/dashboard',
+        industry: '/recruiter/dashboard',
+        faculty: '/faculty/dashboard',
+        institution: '/institution/dashboard',
+        admin: '/admin/dashboard',
+      };
+      navigate(roleMap[user.role] || '/');
     }
-  }, [user, navigate]);
+  }, [user, isAuthenticated, navigate]);
 
-  return <div>Redirecting...</div>;
+  return <div className="flex items-center justify-center h-64 text-muted">Redirecting…</div>;
 };
